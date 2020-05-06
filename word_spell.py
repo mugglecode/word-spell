@@ -6,9 +6,8 @@ import os
 from zipfile import ZIP_DEFLATED
 
 class Document():
-    def __init__(self, path: str, out: str):
+    def __init__(self, path: str):
         self.path = path
-        self.out = out
         self.xml = self._get_word_xml()
         if isinstance(self.xml, bytes):
             self.xml = self._get_word_xml().decode()
