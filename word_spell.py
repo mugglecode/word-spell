@@ -68,8 +68,9 @@ class Document():
         for v in vars:
             if v not in kwargs:
                 raise ValueError(f'expected {len(vars)} arguments got {kwargs.__len__()}, check typo')
+        xml = self.xml
         for v in vars:
             r = r'{(<[A-Za-z\" -=0-9<>/:\u4e00-\u9fa5]*>)?{[ ]*(<[A-Za-z\" -=0-9<>/:\u4e00-\u9fa5]*>)?' + v +'(<[A-Za-z<>=/0-9- \":\u4e00-\u9fa5]*>)?[ ]*}(<[A-Za-z\" -=0-9<>/:\u4e00-\u9fa5]*>)?}'
             exp = re.compile(r)
-            xml = exp.sub(str(kwargs[v]), self.xml)
+            xml = exp.sub(str(kwargs[v]), xml)
         self.save(out, xml)
