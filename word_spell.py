@@ -57,8 +57,11 @@ class Document():
     def debug_args(self, **kwargs):
         vars = self.get_vars()
         for v in kwargs:
-            vars.remove(v)
-        return vars
+            try:
+                vars.remove(v)
+            except:
+                print(v)
+        print(vars)
 
     def render_from_template(self, out: str, **kwargs):
         vars = self.get_vars()
