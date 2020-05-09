@@ -38,7 +38,7 @@ class Document():
 
     def get_vars(self):
         exp = re.compile(
-            r'{(<[A-Za-z\" -=0-9<>/:]*>)?{[ ]*(<[A-Za-z\" -=0-9<>/:]*>)?([A-Za-z0-9_\u4e00-\u9fa5]*)(<[A-Za-z<>=/0-9- \":]*>)?[ ]*}(<[A-Za-z\" -=0-9<>/:]*>)?}')
+            r'{(<[A-Za-z\" -=0-9<>/:\u4e00-\u9fa5]*>)?{[ ]*(<[A-Za-z\" -=0-9<>/:\u4e00-\u9fa5]*>)?([A-Za-z0-9_\u4e00-\u9fa5]*)(<[A-Za-z<>=/0-9- \":\u4e00-\u9fa5]*>)?[ ]*}(<[A-Za-z\" -=0-9<>/:\u4e00-\u9fa5]*>)?}')
         vars = exp.findall(self.xml)
         result = []
         item: tuple
@@ -60,7 +60,7 @@ class Document():
             if v not in kwargs:
                 raise ValueError(f'expected {len(vars)} arguments got {kwargs.__len__()}, check typo')
         for v in vars:
-            r = r'{(<[A-Za-z\" -=0-9<>/:]*>)?{[ ]*(<[A-Za-z\" -=0-9<>/:]*>)?' + v + r'(<[A-Za-z<>=/0-9- \":]*>)?[ ]*}(<[A-Za-z\" -=0-9<>/:]*>)?}'
+            r = r'{(<[A-Za-z\" -=0-9<>/:\u4e00-\u9fa5]*>)?{[ ]*(<[A-Za-z\" -=0-9<>/:\u4e00-\u9fa5]*>)?' + v +'(<[A-Za-z<>=/0-9- \":\u4e00-\u9fa5]*>)?[ ]*}(<[A-Za-z\" -=0-9<>/:\u4e00-\u9fa5]*>)?}'
             exp = re.compile(r)
             self.xml = exp.sub(str(kwargs[v]), self.xml)
         self.save(out)
