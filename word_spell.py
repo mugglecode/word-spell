@@ -19,14 +19,14 @@ class Document():
             xml_content = zip.read('word/document.xml')
         return xml_content
 
-    def save(self, out: str):
+    def save(self, out: str, xml: str):
         tmp_dir = tempfile.mkdtemp()
         f = open(self.path, 'rb')
         zip = zipfile.ZipFile(f, compression=ZIP_DEFLATED)
         zip.extractall(tmp_dir)
 
         with open(os.path.join(tmp_dir, 'word/document.xml'), 'w') as f:
-            f.write(self.xml)
+            f.write(xml)
 
         filenames = zip.namelist()
 
@@ -71,5 +71,5 @@ class Document():
         for v in vars:
             r = r'{(<[A-Za-z\" -=0-9<>/:\u4e00-\u9fa5]*>)?{[ ]*(<[A-Za-z\" -=0-9<>/:\u4e00-\u9fa5]*>)?' + v +'(<[A-Za-z<>=/0-9- \":\u4e00-\u9fa5]*>)?[ ]*}(<[A-Za-z\" -=0-9<>/:\u4e00-\u9fa5]*>)?}'
             exp = re.compile(r)
-            self.xml = exp.sub(str(kwargs[v]), self.xml)
-        self.save(out)
+            xml = exp.sub(str(kwargs[v]), self.xml)
+        self.save(out, xml)
