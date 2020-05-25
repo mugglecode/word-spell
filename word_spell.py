@@ -38,20 +38,38 @@ class Document():
 
     def get_vars(self):
         exp = re.compile(
-            r'{(<[A-Za-z\" -=0-9<>/:\u4e00-\u9fa5]*>)?{[ ]*(<[A-Za-z\" -=0-9<>/:\u4e00-\u9fa5]*>)?([A-Za-z0-9_\u4e00-\u9fa5]*)(<[A-Za-z<>=/0-9- \":\u4e00-\u9fa5]*>)?[ ]*}(<[A-Za-z\" -=0-9<>/:\u4e00-\u9fa5]*>)?}')
-        vars = exp.findall(self.xml)
+            r'<w:t>([^<>]*)</w:t>')
+        matches = []
+        for m in exp.finditer(self.xml):
+            matches.append(m)
+
         result = []
-        item: tuple
-        for item in vars:
-            if item.__len__() == 1:
-                result.append(item[0])
-            else:
-                for m in item:
-                    if '<' in m or '>' in m:
-                        continue
-                    elif m != '':
-                        result.append(m)
-                        break
+        current = ''
+        opening_found = 0
+        closing_found = 0
+        for m in matches:
+            if m.group(1) == '{':
+                opening_found += 1
+                if opening_found == 2:
+                    continue
+            elif m.group(1) == '{{':
+                opening_found += 2
+                continue
+
+            if opening_found == 2:
+                if m.group(1) != '}' and m.group(1) != '}}':
+                    current += m.group(1)
+                elif m.group(1) == '}':
+                    closing_found += 1
+                elif m.group(1) == '}}':
+                    closing_found += 2
+
+            if closing_found == 2:
+                result.append(current)
+                current = ''
+                opening_found = 0
+                closing_found = 0
+
         return result
 
     def debug_args(self, **kwargs):

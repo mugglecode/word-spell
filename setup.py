@@ -4,7 +4,7 @@ import word_spell
 
 setup(
         name='word-spell',
-        version='0.5.1',
+        version='0.6.0',
         py_modules=['word_spell'],
         scripts=['word_spell.py'],
         url='',
