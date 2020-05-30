@@ -47,7 +47,23 @@ class Document():
         current = ''
         opening_found = 0
         closing_found = 0
+        full_pattern = re.compile(r'{{([\S\s]*)}}')
         for m in matches:
+            content = m.group(1)
+            full_match = full_pattern.search(m.group(1))
+            if full_match:
+                result.append(full_match.group(1))
+                continue
+
+            if content.startswith('{{'):
+                opening_found = 2
+                if content.endswith('}'):
+                    closing_found = 1
+                    current = content.replace('{{', '').replace('}', '')
+                else:
+                    current = content.replace('{{', '')
+                continue
+
             if m.group(1) == '{':
                 opening_found += 1
                 if opening_found == 2:
