@@ -38,7 +38,7 @@ class Document():
 
     def get_vars(self):
         exp = re.compile(
-            r'<w:t>([^<>]*)</w:t>')
+            r'<w:t[^>]*>([^<>]*)</w:t>')
         matches = []
         for m in exp.finditer(self.xml):
             matches.append(m)
@@ -64,20 +64,39 @@ class Document():
                     current = content.replace('{{', '')
                 continue
 
-            if m.group(1) == '{':
+            if '{{' in content:
+                pos = content.find('{{')
+                opening_found = 2
+                current = content[pos+2]
+                continue
+            elif content.endswith('{'):
+                opening_found += 1
+                continue
+
+            if '}}' in content:
+                pos = content.find('}}')
+                closing_found = 0
+                opening_found = 0
+                current += content[:pos-2]
+                result.append(current)
+                current = ''
+            elif content.endswith('}'):
+                closing_found += 1
+
+            if content == '{':
                 opening_found += 1
                 if opening_found == 2:
                     continue
-            elif m.group(1) == '{{':
+            elif content == '{{':
                 opening_found += 2
                 continue
 
             if opening_found == 2:
-                if m.group(1) != '}' and m.group(1) != '}}':
-                    current += m.group(1)
-                elif m.group(1) == '}':
+                if content != '}' and content != '}}':
+                    current += content
+                elif content == '}':
                     closing_found += 1
-                elif m.group(1) == '}}':
+                elif content == '}}':
                     closing_found += 2
 
             if closing_found == 2:
