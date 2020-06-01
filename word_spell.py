@@ -3,7 +3,6 @@ import tempfile
 import zipfile
 import re
 import os
-from zipfile import ZIP_DEFLATED
 
 class Document():
     def __init__(self, path: str):
@@ -15,14 +14,14 @@ class Document():
 
     def _get_word_xml(self):
         with open(self.path, 'rb') as f:
-            zip = zipfile.ZipFile(f, compression=ZIP_DEFLATED)
+            zip = zipfile.ZipFile(f)
             xml_content = zip.read('word/document.xml')
         return xml_content
 
     def save(self, out: str, xml: str):
         tmp_dir = tempfile.mkdtemp()
         f = open(self.path, 'rb')
-        zip = zipfile.ZipFile(f, compression=ZIP_DEFLATED)
+        zip = zipfile.ZipFile(f)
         zip.extractall(tmp_dir)
 
         with open(os.path.join(tmp_dir, 'word/document.xml'), 'w') as f:
